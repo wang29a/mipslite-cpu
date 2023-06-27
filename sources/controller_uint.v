@@ -1,6 +1,6 @@
 `include "head.v"
 module controller_uint(
-    input wire [5:0]op;
+    input wire [5:0]op,
     output RegDst,
     output Branch,
     output Jmp,
@@ -9,7 +9,7 @@ module controller_uint(
     output Memwrite,
     output ALUsrc,
     output RegWrite,
-    output extend_op,
+    output extend_op
 );
 wire [9:0] control;
 assign {RegDst, Branch, Jmp, Write_reg_mux,
@@ -21,7 +21,7 @@ MuxKey #(7, 6, 10) con_mux(control, op, {
     `OP_LW,     10'b00011111_00,
     `OP_SW,     10'b00000101_00,
     `OP_BEQ,    10'b01000000_01,
-    `OP_JAL,    10'b00100000_00,
+    `OP_JAL,    10'b00100000_00
 });
 
 

@@ -7,12 +7,11 @@ module mips(
 wire [31:0] instruction_address, ALU_out,
             Read_reg_data1, Read_reg_data2, imm_extend, next_pc,
             SrcA, SrcB, instruction,
-            Write_reg_Data, Write_memory_Data
+            Write_reg_Data, Write_memory_Data,
             Read_memory_data;
 
 wire ALUsrc_mux, Write_reg_mux, RegDst;
 wire RegWrite, Memwrite, MemRead;
-//操作码
 wire extend_op;
 wire [`ALU_OP_LENGTH-1:0] alu_op;
 
@@ -48,14 +47,14 @@ extend U_EXT(.imm16(imm16),
 alu U_ALU(.SrcA(SrcA),
           .SrcB(SrcB),
           .alu_op(alu_op),
-          .ALUout(alu_out)
+          .ALUout(ALU_out)
 );
 
 wire [31:0] wrie_IM_to_IR;
 instruction_memory U_IM(.pc(instruction_address),
                         .instruction(wrie_IM_to_IR));
 instruction_reg U_IR(.clk(clk),
-                     .rst(),
+                    //  .rst(),
                      .ni(wrie_IM_to_IR),
                      .i(instruction)
 );
@@ -63,8 +62,8 @@ instruction_reg U_IR(.clk(clk),
 data_memory U_DM(.clk(clk),
                  .wen(Memwrite),
                  .address(ALU_out),
-                 .write_data(RD2),
-                 .read_data(Read_memory_data),
+                 .write_data(Read_reg_data2),
+                 .read_data(Read_memory_data)
 );
 
 //AULsrc MUX

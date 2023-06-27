@@ -28,7 +28,7 @@
 `define ALU_CONLROL_ORI     3'b011
 
 //EXTEND OP
-`defind EXT_OP_SIGNED   1'b0
-`defind EXT_OP_UNSIGNED 1'b1
+`define EXT_OP_SIGNED   1'b0
+`define EXT_OP_UNSIGNED 1'b1
 //NPC OP
 // `define 
