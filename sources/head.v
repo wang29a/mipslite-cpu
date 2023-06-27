@@ -4,7 +4,12 @@
 //Definition of each operation code
 `define ALU_OP_LENGTH       2
 `define ALU_CONTROL_LENGTH  3
-`define INST_MEM_LENGTH     2
+`define INST_MEM_LENGTH     8
+`define DATA_MEM_LENGTH     64
+
+`define INST_MEM_ADDRESS    3
+`define DATA_MEM_ADDRESS    6
+
 //Define opcode
 `define OP_R_TYPE       6'b000000
 `define OP_ORI          6'b001101

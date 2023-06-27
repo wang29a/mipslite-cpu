@@ -1,7 +1,7 @@
 `include "head.v"
 module mips(
     input wire clk,
-    input wire pc_rst
+    input wire rst
 
 );
 wire [31:0] instruction_address, ALU_out,
@@ -21,7 +21,8 @@ wire [4:0] r1, r2, r3;
 assign rs = instruction[25:21],
        rt = instruction[20:16],
        rd = instruction[15:11];
-
+assign r1 = rs,
+       r2 = rt;
 wire [15:0] imm16;
 wire [25:0] imm26;
 assign imm16 = instruction[15:0],
@@ -29,7 +30,7 @@ assign imm16 = instruction[15:0],
 
 wire [5:0] op, func;
 
-assign op = instruction[31:27],
+assign op = instruction[31:26],
        func =instruction[5:0];
 
 wire Branch, Jmp;
@@ -54,7 +55,7 @@ alu_control U_ALU_CONT(
 );
 
 pc U_PC(.clk(clk),
-        .rst(pc_rst),
+        .rst(rst),
         .npc(next_pc),
         .pc(instruction_address)
 );
@@ -88,17 +89,18 @@ alu U_ALU(.SrcA(SrcA),
 );
 
 wire [31:0] wrie_IM_to_IR;
-instruction_memory U_IM(.pc(instruction_address),
-                        .instruction(wrie_IM_to_IR));
-instruction_reg U_IR(.clk(clk),
-                    //  .rst(),
-                     .ni(wrie_IM_to_IR),
-                     .i(instruction)
-);
+instruction_memory U_IM(.instruction_address(instruction_address[`INST_MEM_ADDRESS+1:2]),
+                        // .instruction(wrie_IM_to_IR));
+                        .instruction(instruction));
+// instruction_reg U_IR(.clk(clk),
+//                      .rst(rst),
+//                      .ni(wrie_IM_to_IR),
+//                      .i(instruction)
+// );
 
 data_memory U_DM(.clk(clk),
                  .wen(Memwrite),
-                 .address(ALU_out),
+                 .address(ALU_out[`DATA_MEM_ADDRESS+1:2]),
                  .write_data(Read_reg_data2),
                  .read_data(Read_memory_data)
 );

@@ -1,14 +1,14 @@
 `include "head.v"
 module instruction_memory(
-    input wire [`LENGTH-1:0] pc,
+    input wire [`INST_MEM_ADDRESS+1:2] instruction_address,
     output wire [`LENGTH-1:0] instruction
 );
 
 reg[31:0] im[0:`INST_MEM_LENGTH-1];
-assign instruction = im[pc];
+assign instruction = im[instruction_address];
 
 initial begin
-    $readmemh("data.txt", im); // Read hexadecimal values from "data.txt" into memory
+    $readmemh("inst_1.txt", im); // Read hexadecimal values from "data.txt" into memory
 end
 integer i;
 

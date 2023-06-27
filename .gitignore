@@ -1,0 +1,3 @@
+./sources *.s
+./sources *.txt
+./sources *.vcd

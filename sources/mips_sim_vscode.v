@@ -20,12 +20,12 @@ module mips_sim_vscode();
     always #10 clk = ~clk;
     initial begin
         $display("start a clock pulse");
-        $dumpfile("wave.vcd");              // 指定记录模拟波形的文件
+        $dumpfile("wave_1.vcd");              // 指定记录模拟波形的文件
         $dumpvars(0, mips_sim_vscode);          // 指定记录的模块层级
         clk = 0;
-        #10;
         pc_rst = 1;
         #10;
+        #1;
         pc_rst = 0;
         #10000 $finish;
     end
