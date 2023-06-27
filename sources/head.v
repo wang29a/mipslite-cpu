@@ -4,6 +4,17 @@
 //Definition of each operation code
 `define ALU_OP_LENGTH 2
 
+//Define opcode
+`define OP_R_TYPE       6'b000000
+`define OP_ORI          6'b001101
+`define OP_LW           6'b100011
+`define OP_SW           6'b101011
+`define OP_BEQ          6'b000100
+`define OP_JAL          6'b000011
+
+//func
+`define FUNC_ADDU       6'b100001
+`define FUNC_SUBU       6'b100011
 //ALU OP
 `define ALU_OP_ADDU     2'b00
 `define ALU_OP_SUBU     2'b01
@@ -11,6 +22,7 @@
 `define ALU_OP_ADD      2'b11
 
 //EXTEND OP
-
+`defind EXT_OP_SIGNED   1'b0
+`defind EXT_OP_UNSIGNED 1'b1
 //NPC OP
 // `define 

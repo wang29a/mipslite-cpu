@@ -7,9 +7,9 @@ module extend(
 
 always @(*) begin
     case (ext_op)
-        0:
+        `EXT_OP_UNSIGNED:
             ext_out <= {16'b0, imm16};
-        1:
+        `EXT_OP_SIGNED:
             ext_out <= {{16{imm16[15]}}, imm16};
         default:
             ext_out <= {16'b0, imm16};

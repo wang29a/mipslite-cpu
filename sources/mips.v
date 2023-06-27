@@ -1,6 +1,7 @@
-
+`include "head.v"
 module mips(
     input wire clk,
+    input wire pc_rst
 
 );
 wire [31:0] instruction_address, ALU_out,
@@ -9,10 +10,11 @@ wire [31:0] instruction_address, ALU_out,
             Write_reg_Data, Write_memory_Data
             Read_memory_data;
 
-wire ALUsrc, MemtoReg, RegDst;
+wire ALUsrc_mux, Write_reg_mux, RegDst;
 wire RegWrite, Memwrite, MemRead;
 //操作码
-wire ;
+wire extend_op;
+wire [`ALU_OP_LENGTH-1:0] alu_op;
 
 wire [4:0] rs, rt, rd;
 wire [4:0] r1, r2, r3;
@@ -24,7 +26,7 @@ wire [15:0] imm16;
 
 assign imm16 = instruction[15:0];
 pc U_PC(.clk(clk),
-        .rst(),
+        .rst(pc_rst),
         .npc(next_pc),
         .pc(instruction_address)
 );
@@ -40,12 +42,12 @@ grp U_RF(.clk(clk),
 );
 
 extend U_EXT(.imm16(imm16),
-             .ext_op(),
+             .ext_op(extend_op),
              .ext_out(imm_extend)
 );
 alu U_ALU(.SrcA(SrcA),
           .SrcB(SrcB),
-          .alu_op(),
+          .alu_op(alu_op),
           .ALUout(alu_out)
 );
 
@@ -66,19 +68,19 @@ data_memory U_DM(.clk(clk),
 );
 
 //AULsrc MUX
-MuxKey #(2, 1, 32) (SrcB, ALUsrc,
+MuxKey #(2, 1, 32) (SrcB, ALUsrc_mux,
     1'b0, Read_reg_data2,
     1'b1, imm_extend
 );
-//MemorALU
-MuxKey #(2, 1, 32) (Write_reg_Data, MemtoReg,
+//Write_reg_MemorALU
+MuxKey #(2, 1, 32) (Write_reg_Data, Write_reg_mux,
     1'b0, ALU_out,
     1'b1, Read_memory_data
 );
 
 //Write_Reg_Address Mux
 MuxKey #(2, 1, 5) (r3, RegDst,
-    1'b0, ,
-    1'b1,
+    1'b0, rt,
+    1'b1, rd
 );
 endmodule
