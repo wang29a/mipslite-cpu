@@ -1,10 +1,10 @@
 `define LENGTH      32
-`define INITIAL_VAL 32'h000030000
+`define INITIAL_VAL 32'h00000000
 
 //Definition of each operation code
-`define ALU_OP_LENGTH 2
-`define ALU_CONLROL_LENGTH
-
+`define ALU_OP_LENGTH       2
+`define ALU_CONTROL_LENGTH  3
+`define INST_MEM_LENGTH     2
 //Define opcode
 `define OP_R_TYPE       6'b000000
 `define OP_ORI          6'b001101
@@ -22,10 +22,10 @@
 `define ALU_OP_ORI          2'b10
 `define ALU_OP_R_TYPE       2'b11
 
-`define ALU_CONLROL_ADD     3'b000
-`define ALU_CONLROL_ADDU    3'b001
-`define ALU_CONLROL_SUBU    3'b010
-`define ALU_CONLROL_ORI     3'b011
+`define ALU_CONTROL_ADD     3'b000
+`define ALU_CONTROL_ADDU    3'b001
+`define ALU_CONTROL_SUBU    3'b010
+`define ALU_CONTROL_ORI     3'b011
 
 //EXTEND OP
 `define EXT_OP_SIGNED   1'b0

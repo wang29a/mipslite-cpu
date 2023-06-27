@@ -1,5 +1,5 @@
 // 选择器模板内部实现
-module MuxKeyInternal #(NR_KEY = 2, KEY_LEN = 1, DATA_LEN = 1, HAS_DEFAULT = 0) (
+module MuxKeyInternal #(parameter  NR_KEY = 2, parameter  KEY_LEN = 1, parameter  DATA_LEN = 1, HAS_DEFAULT = 0) (
   output reg [DATA_LEN-1:0] out,
   input [KEY_LEN-1:0] key,
   input [DATA_LEN-1:0] default_out,
@@ -35,7 +35,7 @@ module MuxKeyInternal #(NR_KEY = 2, KEY_LEN = 1, DATA_LEN = 1, HAS_DEFAULT = 0) 
 endmodule
 
 // 不带默认值的选择器模板
-module MuxKey #(NR_KEY = 2, KEY_LEN = 1, DATA_LEN = 1) (
+module MuxKey #(parameter NR_KEY = 2, parameter KEY_LEN = 1, parameter DATA_LEN = 1) (
   output [DATA_LEN-1:0] out,
   input [KEY_LEN-1:0] key,
   input [NR_KEY*(KEY_LEN + DATA_LEN)-1:0] lut
@@ -44,7 +44,7 @@ module MuxKey #(NR_KEY = 2, KEY_LEN = 1, DATA_LEN = 1) (
 endmodule
 
 // 带默认值的选择器模板
-module MuxKeyWithDefault #(NR_KEY = 2, KEY_LEN = 1, DATA_LEN = 1) (
+module MuxKeyWithDefault #(parameter NR_KEY = 2, parameter KEY_LEN = 1, parameter DATA_LEN = 1) (
   output [DATA_LEN-1:0] out,
   input [KEY_LEN-1:0] key,
   input [DATA_LEN-1:0] default_out,

@@ -12,13 +12,13 @@ module grp(
     end
 
     always @(posedge clk) begin
-        if (wen && rd) begin
-            reg_file[rd] <= WD;
+        if (wen && r3) begin
+            reg_file[r3] <= WD;
         end
         else if (wen) begin
-            reg_file[rd] <= 0;
+            reg_file[r3] <= 0;
         end
     end
-    assign RD1 = reg_file[rs];
-    assign RD2 = reg_file[rd];
+    assign RD1 = reg_file[r1];
+    assign RD2 = reg_file[r2];
 endmodule

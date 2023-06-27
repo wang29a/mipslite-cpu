@@ -2,8 +2,8 @@
 module pc(
     input clk,
     input rst,
-    input npc,
-    output reg [`LENGTH-1:0] pc
+    input [`LENGTH-1:0] npc,
+    output wire [`LENGTH-1:0] pc
     
 );
     Reg #(`LENGTH, `INITIAL_VAL) u_pc(
