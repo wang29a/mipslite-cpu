@@ -68,19 +68,19 @@ data_memory U_DM(.clk(clk),
 );
 
 //AULsrc MUX
-MuxKey #(2, 1, 32) (SrcB, ALUsrc_mux,
+MuxKey #(2, 1, 32) (SrcB, ALUsrc_mux, {
     1'b0, Read_reg_data2,
     1'b1, imm_extend
-);
+});
 //Write_reg_MemorALU
-MuxKey #(2, 1, 32) (Write_reg_Data, Write_reg_mux,
+MuxKey #(2, 1, 32) (Write_reg_Data, Write_reg_mux, {
     1'b0, ALU_out,
     1'b1, Read_memory_data
-);
+});
 
 //Write_Reg_Address Mux
-MuxKey #(2, 1, 5) (r3, RegDst,
+MuxKey #(2, 1, 5) (r3, RegDst, {
     1'b0, rt,
     1'b1, rd
-);
+});
 endmodule
