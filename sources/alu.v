@@ -7,13 +7,15 @@ module alu(
 
 always @(*) begin
     case (alu_op)
-        `ALU_OP_ADDU: 
+        `ALU_CONLROL_ADD: 
             ALUout <= SrcA + SrcB;
-        `ALU_OP_SUBU:
+        `ALU_CONLROL_ADDU:
+            ALUout <= SrcA + SrcB;
+        `ALU_CONLROL_SUBU:
             ALUout <= SrcA - SrcB;
-        `ALU_OP_OR:
+        `ALU_CONLROL_ORI:
             ALUout <= SrcA | SrcB;
-        default :
+        default:
             ALUout <= 0; 
     endcase
 end
