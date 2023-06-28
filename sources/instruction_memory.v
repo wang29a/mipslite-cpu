@@ -8,13 +8,13 @@ reg[31:0] im[0:`INST_MEM_LENGTH-1];
 assign instruction = im[instruction_address];
 
 initial begin
-    $readmemh("inst_1.txt", im); // Read hexadecimal values from "data.txt" into memory
+    $readmemh("inst_2.txt", im); // Read hexadecimal values from "data.txt" into memory
 end
 integer i;
 
 initial begin
     for (i = 0; i < `INST_MEM_LENGTH; i = i + 1)
-        $display("IM[%d] = %d", i, im[i]);
+        $display("IM[%d] = %x", i, im[i]);
 end
 
 endmodule
