@@ -18,11 +18,4 @@ always @(posedge clk) begin
         dm[address] <= write_data;
 end
 
-integer i;
-initial begin
-    $readmemh("data.txt", dm);
-    for (i = 0; i < `DATA_MEM_LENGTH; i = i +1)
-        $display("DM[%d] = %x", i, dm[i]);
-end
-
 endmodule

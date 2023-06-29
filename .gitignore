@@ -1,3 +1,4 @@
-sources/*.s
-sources/*.txt
+sources/data/*.s
+sources/data/*.txt
 sources/*.vcd
+sources/*.out
