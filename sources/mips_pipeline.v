@@ -11,6 +11,8 @@ wire [31:0]
             Write_reg_Data, Write_memory_Data,
             Read_memory_data;
 
+wire stall;
+
 wire [31:0] pcF, pc_4F, instructionF;
 
 wire [31:0] instructionD,
@@ -19,13 +21,14 @@ wire [31:0] instructionD,
             imm_extD;
 
 wire ALUsrc_muxD, Write_reg_muxD, RegDstD;
-wire RegWriteD, MemwriteD;
+wire RegWriteD, MemwriteD, MemreadD;
 wire extend_opD;
 wire [`ALU_OP_LENGTH-1:0] alu_opD;
-wire [4:0] rtD, rdD;
+wire [4:0] rtD, rdD, rsD;
 
 assign rtD = instructionD[20:16],
-       rdD = instructionD[15:11];
+       rdD = instructionD[15:11],
+       rsD = instructionD[25:21];
 
 wire [31:0] SrcAE, SrcBE, ALU_outE,
             imm_extE,
@@ -33,10 +36,10 @@ wire [31:0] SrcAE, SrcBE, ALU_outE,
             Read_reg_data_2E;
 wire [5:0] funcE;
 wire [4:0] Write_Reg_AddressE,
-           rtE, rdE;
+           rtE, rdE, rsE;
 wire [`ALU_OP_LENGTH-1:0] alu_opE;
 wire ALUsrc_muxE, Write_reg_muxE, RegDstE;
-wire RegWriteE, MemwriteE;
+wire RegWriteE, MemwriteE, MemreadE;
 wire zeroE;
 
 assign funcE = imm_extE[5:0];
@@ -52,7 +55,7 @@ wire [4:0] Write_Reg_AddressW;
 wire RegWriteW, Write_reg_muxW;
 
 assign pc_4F = pcF+32'h00000004;
-assign SrcAE = Read_reg_data_1E;
+// assign SrcAE = Read_reg_data_1E;
 wire ALUsrc_mux, Write_reg_mux, RegDst;
 wire RegWrite, Memwrite, MemRead;
 wire extend_op;
@@ -80,12 +83,14 @@ wire Branch, Jmp, zero;
 
 controller_uint U_CU(
     .op(op),
+    .stall(stall),
     .RegDst(RegDstD),
     .Branch(Branch),
     .Jmp(Jmp),
     .Write_reg_mux(Write_reg_muxD),
     .ALUOp(alu_opD),
     .Memwrite(MemwriteD),
+    .Memread(MemreadD),
     .ALUsrc(ALUsrc_muxD),
     .RegWrite(RegWriteD),
     .extend_op(extend_opD)
@@ -99,6 +104,7 @@ alu_control U_ALU_CONT(
 
 pc U_PC(.clk(clk),
         .rst(rst),
+        .wen(stall),
         .npc(pc_4F),
         .pc(pcF)
 );
@@ -147,12 +153,14 @@ data_memory U_DM(.clk(clk),
                  .wen(Memwrite),
                  .address(ALU_outM[`DATA_MEM_ADDRESS+1:2]),
                  .write_data(Write_memory_DataM),
-                 .read_data(Read_memory_data)
+                 .read_data(Read_memory_dataM)
 );
+
+wire [`LENGTH-1:0] SrcB_tmp;
 
 //AULsrc MUX
 MuxKey #(2, 1, 32) U_ALUsrc_MUX(SrcBE, ALUsrc_muxE, {
-    1'b0, Read_reg_data_2E,
+    1'b0, SrcB_tmp,
     1'b1, imm_extE
 });
 //Write_reg_MemorALU
@@ -170,6 +178,7 @@ MuxKey #(2, 1, 5) U_Write_reg_address_MUX(Write_Reg_AddressE, RegDstE, {
 reg_if_id U_IF_ID(
     .clk(clk),
     .rst(rst),
+    .wen(stall),
     .instruction_in(instructionF),
     .instruction_out(instructionD)
 );
@@ -181,6 +190,7 @@ reg_id_exe U_ID_EXE(
     .ALUOp_in(alu_opD),
     .Write_reg_mux_in(Write_reg_muxD),
     .Memwrite_in(MemwriteD),
+    .Memread_in(MemreadD),
     .ALUsrc_in(ALUsrc_muxD),
     .RegWrite_in(RegWriteD),
     .Read_data_1_in(Read_reg_data_1D),
@@ -188,17 +198,20 @@ reg_id_exe U_ID_EXE(
     .imm_ext_in(imm_extD),
     .rt_in(rtD),
     .rd_in(rdD),
+    .rs_in(rsD),
     .RegDst_out(RegDstE),
     .ALUOp_out(alu_opE),
     .Write_reg_mux_out(Write_reg_muxE),
     .Memwrite_out(MemwriteE),
+    .Memread_out(MemreadE),
     .ALUsrc_out(ALUsrc_muxE),
     .RegWrite_out(RegWriteE),
     .Read_data_1_out(Read_reg_data_1E),
     .Read_data_2_out(Read_reg_data_2E),
     .imm_ext_out(imm_extE),
     .rt_out(rtE),
-    .rd_out(rdE)
+    .rd_out(rdE),
+    .rs_out(rsE)
 );
 
 reg_exe_mem U_EXE_MEM(
@@ -233,6 +246,40 @@ reg_mem_wb U_MEM_WB(
     .Write_Reg_Address_out(Write_Reg_AddressW),
     .ALU_out_out(ALU_outW),
     .Write_reg_mux_out(Write_reg_muxW)
+);
+
+wire [1:0] forward_a, forward_b;
+
+forwarding_uint U_FORWARD(
+    .exe_mem_RegWrite(RegWriteM),
+    .mem_wb_RegWrite(RegWriteW),
+    .exe_mem_rd(Write_Reg_AddressM),
+    .mem_wb_rd(Write_Reg_AddressW),
+    .id_exe_rs(rsE),
+    .id_exe_rt(rtE),
+
+    .forward_A(forward_a),
+    .forward_B(forward_b)
+);
+
+MuxKey #(3, 2, `LENGTH) U_FORWARD_MUX1(SrcAE, forward_a, {
+    2'b01, Write_reg_Data,
+    2'b10, ALU_outM,
+    2'b00, Read_reg_data_1E
+});
+
+MuxKey #(3, 2, `LENGTH) U_FORWARD_MUX2(SrcB_tmp, forward_b, {
+    2'b01, Write_reg_Data,
+    2'b10, ALU_outM,
+    2'b00, Read_reg_data_2E
+});
+
+hazard_detection_uint U_HAZARD_DETE(
+    .id_exe_rt(rtE),
+    .if_id_rs(rsD),
+    .if_id_rt(rtD),
+    .id_exe_mem_read(MemreadE),
+    .stall(stall)
 );
 
 endmodule
