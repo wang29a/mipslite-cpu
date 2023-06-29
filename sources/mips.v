@@ -31,7 +31,7 @@ assign imm16 = instruction[15:0],
 wire [5:0] op, func;
 
 assign op = instruction[31:26],
-       func = instruction[5:0];
+       func =instruction[5:0];
 
 wire Branch, Jmp, zero;
 
