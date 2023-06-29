@@ -10,6 +10,7 @@ module data_memory(
 );
 
 reg [31:0] dm[0:`DATA_MEM_LENGTH-1];
+reg [31:0] LO, HI;
 
 assign read_data = dm[address];
 
