@@ -56,3 +56,7 @@
 `define EXT_OP_UNSIGNED 1'b1
 //NPC OP
 // `define 
+
+//define initial values
+`define INITIAL_VAL_32      32'h00000000
+`define INITIAL_VAL_6       6'b000000

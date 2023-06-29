@@ -19,9 +19,4 @@ always @(posedge clk) begin
         dm[address] <= write_data;
 end
 
-// integer i;
-initial begin
-    $readmemh("data.txt", dm);
-end
-
 endmodule

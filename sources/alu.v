@@ -2,10 +2,14 @@
 module alu(
     input [31:0] SrcA, SrcB,
     input [`ALU_CONTROL_LENGTH-1:0] alu_cont,
+
     output reg [31:0] ALUout,
-    // output reg [31:0] LO, HI;
+    // output reg [31:0] LO, HI，
+    output zero
 );
 reg [63:0] temp;
+assign zero = (ALUout == 32'h00000000) ? 1 : 0;
+
 always @(*) begin
     case (alu_cont)
         `ALU_CONTROL_ADD: 

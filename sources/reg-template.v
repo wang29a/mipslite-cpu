@@ -8,6 +8,7 @@ module Reg #(parameter WIDTH = 1, parameter RESET_VAL = 0) (
 );
   always @(posedge clk) begin
     if (rst) dout <= RESET_VAL;
-    else if (wen) dout <= din;
+    // else if (wen) dout <= din;
+    else dout <= din;
   end
 endmodule

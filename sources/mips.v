@@ -33,7 +33,7 @@ wire [5:0] op, func;
 assign op = instruction[31:26],
        func = instruction[5:0];
 
-wire Branch, Jmp;
+wire Branch, Jmp, zero;
 
 controller_uint U_CU(
     .op(op),
@@ -63,7 +63,7 @@ pc U_PC(.clk(clk),
 npc U_NPC(.pc(instruction_address),
           .imm16(imm16),
           .imm26(imm26),
-          .branch(Branch),
+          .branch((Branch&zero)),
           .jmp(Jmp),
           .npc(next_pc)
 );
@@ -85,6 +85,7 @@ extend U_EXT(.imm16(imm16),
 alu U_ALU(.SrcA(SrcA),
           .SrcB(SrcB),
           .alu_cont(alu_cont),
+          .zero(zero),
           .ALUout(ALU_out)
 );
 
