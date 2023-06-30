@@ -82,11 +82,27 @@ extend U_EXT(.imm16(imm16),
              .ext_op(extend_op),
              .ext_out(imm_extend)
 );
+
+wire [`LENGTH-1:0] w_hi, w_lo, hi, lo; 
+wire wen_hilo;
+hilo_reg U_HILO(.clk(clk),
+                .wen(wen_hilo),
+                .w_hi(w_hi),
+                .w_lo(w_lo),
+                .lo(lo),
+                .hi(hi)
+);
+
 alu U_ALU(.SrcA(SrcA),
           .SrcB(SrcB),
           .alu_cont(alu_cont),
           .zero(zero),
-          .ALUout(ALU_out)
+          .ALUout(ALU_out),
+          .LO(lo),
+          .HI(hi),
+          .W_HILO(wen_hilo),
+          .Write_HI(w_hi),
+          .Write_LO(w_lo)
 );
 
 wire [31:0] wrie_IM_to_IR;

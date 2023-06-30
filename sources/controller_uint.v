@@ -13,22 +13,23 @@ module controller_uint(
     output RegWrite,
     output extend_op
 );
-wire [10:0] control, controltmp;
+wire [11:0] control, controltmp;
 assign {RegDst, Branch, Jmp, Write_reg_mux,
         Memread, Memwrite, ALUsrc, RegWrite, extend_op,
         ALUOp} = control;
-MuxKey #(6, 6, 11) con_mux(controltmp, op, {
-    `OP_R_TYPE, 11'b1000_00_010_11,
-    `OP_ORI,    11'b0000_00_110_10,
-    `OP_LW,     11'b0001_10_111_00,
-    `OP_SW,     11'b0000_01_01_00,
-    `OP_BEQ,    11'b0100_00_000_01,
-    `OP_JAL,    11'b0010_00_000_00
+    MuxKey #(7, 6, 12) con_mux(control, op, {
+    `OP_R_TYPE, 12'b1000_00_010_011,
+    `OP_ORI,    12'b0000_00_110_010,
+    `OP_LW,     12'b0001_10_111_000,
+    `OP_SW,     12'b0000_01_101_000,
+    `OP_BEQ,    12'b0100_00_000_001,
+    `OP_JAL,    12'b0010_00_000_000,
+    `OP_XORI,   12'b0000_00_110_100
 });
 
-MuxKey #(2, 1, 11) con_stall_mux(control, stall, {
+MuxKey #(2, 1, 12) con_stall_mux(control, stall, {
     1'b1, controltmp,
-    1'b0, 11'b000000000
+    1'b0, 12'b0000000000
 });
 
 endmodule
