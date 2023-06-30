@@ -18,13 +18,13 @@ assign {RegDst, Branch, Jmp, Write_reg_mux,
         Memread, Memwrite, ALUsrc, RegWrite, extend_op,
         ALUOp} = control;
 MuxKey #(7, 6, 11) con_mux(control, op, {
-    `OP_R_TYPE, 11'b10000010_011,
-    `OP_ORI,    11'b00000110_010,
-    `OP_LW,     11'b00011111_000,
-    `OP_SW,     11'b00000101_000,
-    `OP_BEQ,    11'b01000000_001,
-    `OP_JAL,    11'b00100000_000,
-    `OP_XORI,   11'b00000110_100
+    `OP_R_TYPE, 11'b1000_00_010_011,
+    `OP_ORI,    11'b0000_00_110_010,
+    `OP_LW,     11'b0001_10_111_000,
+    `OP_SW,     11'b0000_01_101_000,
+    `OP_BEQ,    11'b0100_00_000_001,
+    `OP_JAL,    11'b0010_00_000_000,
+    `OP_XORI,   11'b0000_00_110_100
 });
 
 MuxKey #(2, 1, 11) con_stall_mux(control, stall, {
