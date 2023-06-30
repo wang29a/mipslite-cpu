@@ -2,8 +2,8 @@
 `define INITIAL_VAL 32'h00000000
 
 //Definition of each operation code
-`define ALU_OP_LENGTH       2
-`define ALU_CONTROL_LENGTH  3
+`define ALU_OP_LENGTH       3
+`define ALU_CONTROL_LENGTH  5
 `define INST_MEM_LENGTH     8
 `define DATA_MEM_LENGTH     64
 

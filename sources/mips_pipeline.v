@@ -151,7 +151,7 @@ instruction_memory U_IM(.instruction_address(pcF[`INST_MEM_ADDRESS+1:2]),
 
 data_memory U_DM(.clk(clk),
                  .wen(Memwrite),
-                 .address(ALU_outM[`DATA_MEM_ADDRESS+1:2]),
+                 .address(ALU_outM[`DATA_MEM_ADDRESS-1:0]),
                  .write_data(Write_memory_DataM),
                  .read_data(Read_memory_dataM)
 );
