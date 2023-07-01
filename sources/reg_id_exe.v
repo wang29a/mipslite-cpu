@@ -1,5 +1,5 @@
 `include "head.v"
-
+`timescale 1ns / 1ps
 module reg_id_exe(
     input wire                          clk,
     input wire                          rst,
@@ -50,12 +50,12 @@ always @(posedge clk) begin
         rd_out              <= `INITIAL_VAL_6;
         rs_out              <= `INITIAL_VAL_6;
     end
-    else if (rst) begin
+    else if (flush) begin
         RegDst_out          <= 1'b0;
         ALUOp_out           <= 2'b0;
         Write_reg_mux_out   <= 1'b0;
         Memwrite_out        <= 1'b0;
-        Memread_out        <= 1'b0;
+        Memread_out         <= 1'b0;
         ALUsrc_out          <= 1'b0;
         RegWrite_out        <= 1'b0;
         Read_data_1_out     <= `INITIAL_VAL_32;

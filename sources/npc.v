@@ -1,4 +1,4 @@
-
+`timescale 1ns / 1ps
 module npc(
     input wire [31:0] pc,
     input wire [15:0] imm16,

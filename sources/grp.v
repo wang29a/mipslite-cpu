@@ -1,4 +1,5 @@
 `include "head.v"
+`timescale 1ns / 1ps
 module grp(
     input           clk,
     input           wen,

@@ -1,4 +1,5 @@
 `include "head.v"
+`timescale 1ns / 1ps
 module mips_pipeline(
     input wire clk,
     input wire rst
@@ -11,7 +12,7 @@ wire [31:0]
             Write_reg_Data, Write_memory_Data, next_pc,
             Read_memory_data;
 
-wire stall, flush;
+wire stallD, stallF, flush;
 
 wire [31:0] pcF, pc_4F, instructionF;
 
@@ -83,7 +84,7 @@ wire BranchD, Jmp, zero;
 
 controller_uint U_CU(
     .op(op),
-    .stall(~stall),
+    .stall(~stallD),
     .RegDst(RegDstD),
     .Branch(BranchD),
     .Jmp(Jmp),
@@ -109,7 +110,7 @@ MuxKey #(2, 1, `LENGTH) U_pc_src_mux(next_pc, BranchD&is_equal, {
 
 pc U_PC(.clk(clk),
         .rst(rst),
-        .wen(~stall),
+        .wen(~stallF),
         .npc(next_pc),
         .pc(pcF)
 );
@@ -140,7 +141,7 @@ extend U_EXT(.imm16(imm16),
 alu U_ALU(.SrcA(SrcAE),
           .SrcB(SrcBE),
           .alu_cont(alu_cont),
-          .zero(zero),
+          .zero(zeroE),
           .ALUout(ALU_outE)
 );
 
@@ -183,7 +184,7 @@ MuxKey #(2, 1, 5) U_Write_reg_address_MUX(Write_Reg_AddressE, RegDstE, {
 reg_if_id U_IF_ID(
     .clk(clk),
     .rst(rst),
-    .wen(~stall),
+    .wen(~stallD),
     .flush(BranchD&is_equal),
     .instruction_in(instructionF),
     .pc_4_in(pc_4F),
@@ -194,7 +195,7 @@ reg_if_id U_IF_ID(
 reg_id_exe U_ID_EXE(
     .clk(clk),
     .rst(rst),
-    // .wen(~stall),
+    // .wen(~stallD),
     .flush(flush),
     .RegDst_in(RegDstD),
     .ALUOp_in(alu_opD),
@@ -259,7 +260,7 @@ reg_mem_wb U_MEM_WB(
 );
 
 wire [1:0] forward_a, forward_b;
-wire forward_AD, froward_BD;
+wire forward_AD, forward_BD;
 forwarding_uint U_FORWARD(
     .exe_mem_RegWrite(RegWriteM),
     .mem_wb_RegWrite(RegWriteW),
@@ -273,7 +274,7 @@ forwarding_uint U_FORWARD(
     .forward_A(forward_a),
     .forward_B(forward_b),
     .forward_AD(forward_AD),
-    .froward_BD(froward_BD)
+    .forward_BD(forward_BD)
 );
 
 MuxKey #(3, 2, `LENGTH) U_FORWARD_MUX1(SrcAE, forward_a, {
@@ -289,17 +290,18 @@ MuxKey #(3, 2, `LENGTH) U_FORWARD_MUX2(SrcB_tmp, forward_b, {
 });
 
 hazard_detection_uint U_HAZARD_DETE(
-    .id_exe_rt(rtE),
-    .id_exe_rs(rsE),
-    .if_id_rs(rsD),
-    .if_id_rt(rtD),
+    .rtE(rtE),
+    .rsE(rsE),
+    .rsD(rsD),
+    .rtD(rtD),
     .id_exe_mem_read(MemreadE),
     .branchD(BranchD),
     .RegWriteE(RegWriteE),
     .Write_Reg_AddressE(Write_Reg_AddressE),
     .Write_Reg_AddressM(Write_Reg_AddressM),
     .Write_reg_muxM(Write_reg_muxM),
-    .stall(stall),
+    .stallD(stallD),
+    .stallF(stallF),
     .flush(flush)
 );
 wire [`LENGTH-1:0] read_data_1tmp, read_data_2tmp;

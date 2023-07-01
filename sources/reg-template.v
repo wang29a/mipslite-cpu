@@ -1,4 +1,4 @@
-// 触发器模板
+`timescale 1ns / 1ps
 module Reg #(parameter WIDTH = 1, parameter RESET_VAL = 0) (
   input clk,
   input rst,

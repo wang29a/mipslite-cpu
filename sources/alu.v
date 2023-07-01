@@ -1,4 +1,5 @@
 `include "head.v"
+`timescale 1ns / 1ps
 module alu(
     input [31:0] SrcA, SrcB,
     input [`ALU_CONTROL_LENGTH-1:0] alu_cont,

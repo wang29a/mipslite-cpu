@@ -1,4 +1,5 @@
 `include "head.v"
+`timescale 1ns / 1ps
 module reg_if_id(
     input wire clk,
     input wire rst,
@@ -18,7 +19,7 @@ always @(posedge clk) begin
     end
     else if (flush) begin
         instruction_out <= `INITIAL_VAL;
-        pc_4_out <= `INITIAL_VAL;
+        pc_4_out <= pc_4_in;
     end
     else if (wen) begin
         instruction_out <= instruction_in;
