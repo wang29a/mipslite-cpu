@@ -33,7 +33,7 @@ module grp(
         if (wen && (r3 == r2) && (r2 != 5'b00000)) begin
            RD2 = WD;
         end
-        else if (r1 != 5'b00000) begin
+        else if (r2 != 5'b00000) begin
            RD2 = reg_file[r2];
         end
         else begin

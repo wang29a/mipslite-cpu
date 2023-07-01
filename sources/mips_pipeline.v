@@ -6,16 +6,16 @@ module mips_pipeline(
 );
 wire [31:0] 
             // pcF, ALU_out,
-            // Read_reg_data1, Read_reg_data2, imm_extend, next_pc,
+            // Read_reg_data1, Read_reg_data2, imm_extend, 
             // SrcA, SrcB, instructionD,
-            Write_reg_Data, Write_memory_Data,
+            Write_reg_Data, Write_memory_Data, next_pc,
             Read_memory_data;
 
-wire stall;
+wire stall, flush;
 
 wire [31:0] pcF, pc_4F, instructionF;
 
-wire [31:0] instructionD,
+wire [31:0] instructionD, pc_4D,
             Read_reg_data_1D,
             Read_reg_data_2D,
             imm_extD;
@@ -79,13 +79,13 @@ wire [5:0] op, func;
 assign op = instructionD[31:26],
        func = instructionD[5:0];
 
-wire Branch, Jmp, zero;
+wire BranchD, Jmp, zero;
 
 controller_uint U_CU(
     .op(op),
-    .stall(stall),
+    .stall(~stall),
     .RegDst(RegDstD),
-    .Branch(Branch),
+    .Branch(BranchD),
     .Jmp(Jmp),
     .Write_reg_mux(Write_reg_muxD),
     .ALUOp(alu_opD),
@@ -101,11 +101,16 @@ alu_control U_ALU_CONT(
     .func(funcE),
     .alu_control(alu_cont)
 );
+wire is_equal;
+MuxKey #(2, 1, `LENGTH) U_pc_src_mux(next_pc, BranchD&is_equal, {
+    1'b0, pc_4F,
+    1'b1, pc_4D + {{14{imm16[15]}}, imm16, 2'b00}
+});
 
 pc U_PC(.clk(clk),
         .rst(rst),
-        .wen(stall),
-        .npc(pc_4F),
+        .wen(~stall),
+        .npc(next_pc),
         .pc(pcF)
 );
 
@@ -150,8 +155,8 @@ instruction_memory U_IM(.instruction_address(pcF[`INST_MEM_ADDRESS+1:2]),
 // );
 
 data_memory U_DM(.clk(clk),
-                 .wen(Memwrite),
-                 .address(ALU_outM[`DATA_MEM_ADDRESS-1:0]),
+                 .wen(MemwriteM),
+                 .address(ALU_outM[`DATA_MEM_ADDRESS+1:2]),
                  .write_data(Write_memory_DataM),
                  .read_data(Read_memory_dataM)
 );
@@ -178,14 +183,19 @@ MuxKey #(2, 1, 5) U_Write_reg_address_MUX(Write_Reg_AddressE, RegDstE, {
 reg_if_id U_IF_ID(
     .clk(clk),
     .rst(rst),
-    .wen(stall),
+    .wen(~stall),
+    .flush(BranchD&is_equal),
     .instruction_in(instructionF),
-    .instruction_out(instructionD)
+    .pc_4_in(pc_4F),
+    .instruction_out(instructionD),
+    .pc_4_out(pc_4D)
 );
 
 reg_id_exe U_ID_EXE(
     .clk(clk),
     .rst(rst),
+    // .wen(~stall),
+    .flush(flush),
     .RegDst_in(RegDstD),
     .ALUOp_in(alu_opD),
     .Write_reg_mux_in(Write_reg_muxD),
@@ -249,7 +259,7 @@ reg_mem_wb U_MEM_WB(
 );
 
 wire [1:0] forward_a, forward_b;
-
+wire forward_AD, froward_BD;
 forwarding_uint U_FORWARD(
     .exe_mem_RegWrite(RegWriteM),
     .mem_wb_RegWrite(RegWriteW),
@@ -257,9 +267,13 @@ forwarding_uint U_FORWARD(
     .mem_wb_rd(Write_Reg_AddressW),
     .id_exe_rs(rsE),
     .id_exe_rt(rtE),
+    .rsD(rsD),
+    .rtD(rtD),
 
     .forward_A(forward_a),
-    .forward_B(forward_b)
+    .forward_B(forward_b),
+    .forward_AD(forward_AD),
+    .froward_BD(froward_BD)
 );
 
 MuxKey #(3, 2, `LENGTH) U_FORWARD_MUX1(SrcAE, forward_a, {
@@ -276,10 +290,32 @@ MuxKey #(3, 2, `LENGTH) U_FORWARD_MUX2(SrcB_tmp, forward_b, {
 
 hazard_detection_uint U_HAZARD_DETE(
     .id_exe_rt(rtE),
+    .id_exe_rs(rsE),
     .if_id_rs(rsD),
     .if_id_rt(rtD),
     .id_exe_mem_read(MemreadE),
-    .stall(stall)
+    .branchD(BranchD),
+    .RegWriteE(RegWriteE),
+    .Write_Reg_AddressE(Write_Reg_AddressE),
+    .Write_Reg_AddressM(Write_Reg_AddressM),
+    .Write_reg_muxM(Write_reg_muxM),
+    .stall(stall),
+    .flush(flush)
+);
+wire [`LENGTH-1:0] read_data_1tmp, read_data_2tmp;
+MuxKey #(2, 1, `LENGTH) U_branch_r1_mux(read_data_1tmp, forward_AD, {
+    1'b0, Read_reg_data_1D,
+    1'b1, ALU_outM
+});
+MuxKey #(2, 1, `LENGTH) U_branch_r2_mux(read_data_2tmp, forward_BD, {
+    1'b0, Read_reg_data_2D,
+    1'b1, ALU_outM
+});
+
+is_equal U_IS_EQUAL(
+    .read_data_1(read_data_1tmp),
+    .read_data_2(read_data_2tmp),
+    .equal(is_equal)
 );
 
 endmodule

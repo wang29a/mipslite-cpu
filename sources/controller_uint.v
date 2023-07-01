@@ -17,7 +17,7 @@ wire [11:0] control, controltmp;
 assign {RegDst, Branch, Jmp, Write_reg_mux,
         Memread, Memwrite, ALUsrc, RegWrite, extend_op,
         ALUOp} = control;
-    MuxKey #(7, 6, 12) con_mux(control, op, {
+    MuxKey #(7, 6, 12) con_mux(controltmp, op, {
     `OP_R_TYPE, 12'b1000_00_010_011,
     `OP_ORI,    12'b0000_00_110_010,
     `OP_LW,     12'b0001_10_111_000,
