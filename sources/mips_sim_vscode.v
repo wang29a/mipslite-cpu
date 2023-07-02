@@ -37,10 +37,6 @@ module mips_sim_vscode();
     // $readmemh("data.txt", dm);
         for (i = 0; i < `DATA_MEM_LENGTH; i = i +1)
             $display("DM[%d] = %x", i, u_mips.U_DM.dm[i]);
-        for (i = 0; i < 8; i = i +1) begin
-            u_mips.U_BHT.BHT[i] = 2'b11;
-            $display("BHT[%d] = %d", i, u_mips.U_BHT.BHT[i]);
-        end
         // for (i = 0; i < `INST_MEM_LENGTH; i = i + 1)
         //     $display("IM[%d] = %x", i, u_mips.U_IM.im[i]);
         // for (i = 0; i < 32; i = i + 1)
@@ -53,7 +49,7 @@ module mips_sim_vscode();
         pc_rst = 0;
         // for (i = 0; i < `DATA_MEM_LENGTH; i = i +1)
         //     $display("DM[%d] = %x", i, u_mips.U_DM.dm[i]);
-        #200;
+        #2000;
         for (i = 0; i < 32; i = i + 1)
             $display("RF[%d] = %x", i, u_mips.U_RF.reg_file[i]);
         $finish;
