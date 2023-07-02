@@ -75,12 +75,21 @@ wire [25:0] imm26;
 assign imm16 = instructionD[15:0],
        imm26 = instructionD[25:0];
 
-wire [5:0] op, func;
+wire [5:0] op, func, opF;
 
 assign op = instructionD[31:26],
-       func = instructionD[5:0];
+       func = instructionD[5:0],
+       opF = instructionF[31:26];
 
-wire BranchD, Jmp, zero;
+wire BranchD, Jmp, zero, predict;
+
+Branch_History_Table U_BHT(
+    .clk(clk),
+    .rst(op==`OP_BEQ),
+    .jmp(BranchD&is_equal),
+    .address(pcF[9:2]),
+    .predict(predict)
+);
 
 controller_uint U_CU(
     .op(op),
@@ -103,7 +112,7 @@ alu_control U_ALU_CONT(
     .alu_control(alu_cont)
 );
 wire is_equal;
-MuxKey #(2, 1, `LENGTH) U_pc_src_mux(next_pc, BranchD&is_equal, {
+MuxKey #(2, 1, `LENGTH) U_pc_src_mux(next_pc, (BranchD&is_equal)^(predict), {
     1'b0, pc_4F,
     1'b1, pc_4D + {{14{imm16[15]}}, imm16, 2'b00}
 });
@@ -185,7 +194,7 @@ reg_if_id U_IF_ID(
     .clk(clk),
     .rst(rst),
     .wen(~stallD),
-    .flush(BranchD&is_equal),
+    .flush((BranchD&is_equal)^(predict)),
     .instruction_in(instructionF),
     .pc_4_in(pc_4F),
     .instruction_out(instructionD),
