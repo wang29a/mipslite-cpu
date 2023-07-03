@@ -9,11 +9,10 @@ module multiplier(
     input sign,
     input [31:0] _X,
     input [31:0] _Y,
-    output  [63:0] res,
-    output reg [67:0] extend_X
+    output  [63:0] res
 );
 wire [67:0] part_p [0:16];
-// reg [11:0] extend_X;
+reg [67:0] extend_X;
 reg [67:0] move_ex[0:16];
 reg [34:0] Y;
 // wire [1:0]C[0:16];

@@ -2,12 +2,12 @@
 `define INITIAL_VAL 32'h00000000
 
 //Definition of each operation code
-`define ALU_OP_LENGTH       2
-`define ALU_CONTROL_LENGTH  3
-`define INST_MEM_LENGTH     8
+`define ALU_OP_LENGTH       3
+`define ALU_CONTROL_LENGTH  5
+`define INST_MEM_LENGTH     64
 `define DATA_MEM_LENGTH     64
 
-`define INST_MEM_ADDRESS    3
+`define INST_MEM_ADDRESS    6
 `define DATA_MEM_ADDRESS    6
 
 //Define opcode
@@ -18,6 +18,8 @@
 `define OP_BEQ          6'b000100
 `define OP_JAL          6'b000011
 `define OP_XORI         6'b001110
+`define OP_ANDI         6'b001100
+`define OP_ADDI         6'b001000
 
 //func
 `define FUNC_ADDU       6'b100001
@@ -35,13 +37,15 @@
 `define FUNC_MFLO       6'b010010
 `define FUNC_MTHI       6'b010001
 `define FUNC_MTLO       6'b010011 
-
+`define FUNC_MULT       6'b011000
 //ALU OP
-`define ALU_OP_ADD          3'b000
-`define ALU_OP_SUB          3'b001
+// `define ALU_OP_ADD          3'b000
+// `define ALU_OP_SUB          3'b001
 `define ALU_OP_ORI          3'b010
 `define ALU_OP_R_TYPE       3'b011
 `define ALU_OP_XORI         3'b100
+`define ALU_OP_ANDI         3'b101
+`define ALU_OP_ADDI         3'b110
 
 `define ALU_CONTROL_ADD     5'b00000
 `define ALU_CONTROL_ADDU    5'b00001
@@ -61,6 +65,9 @@
 `define ALU_CONTROL_MTLO    5'b10001 
 `define ALU_CONTROL_MFHI    5'b10010 
 `define ALU_CONTROL_MFLO    5'b10011
+`define ALU_CONTROL_ANDI    5'b10100
+`define ALU_CONTROL_ADDI    5'b10101
+`define ALU_CONTROL_MULT    5'b10110
 //EXTEND OP
 `define EXT_OP_SIGNED   1'b0
 `define EXT_OP_UNSIGNED 1'b1
@@ -70,4 +77,3 @@
 //define initial values
 `define INITIAL_VAL_32      32'h00000000
 `define INITIAL_VAL_6       6'b000000
-
