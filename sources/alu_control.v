@@ -8,9 +8,9 @@ module alu_control(
 
 wire [`ALU_CONTROL_LENGTH-1:0] r_type_alu;
 //non-R-TYPE
-MuxKey #(5, `ALU_OP_LENGTH, `ALU_CONTROL_LENGTH) mux_nr(alu_control, aluop, {
-    // `ALU_OP_ADD, `ALU_CONTROL_ADD,
-    // `ALU_OP_SUB, `ALU_CONTROL_SUBU,
+MuxKey #(7, `ALU_OP_LENGTH, `ALU_CONTROL_LENGTH) mux_nr(alu_control, aluop, {
+    `ALU_OP_ADD, `ALU_CONTROL_ADD,
+    `ALU_OP_SUB, `ALU_CONTROL_SUBU,
     `ALU_OP_ORI, `ALU_CONTROL_ORI,
     `ALU_OP_R_TYPE, r_type_alu,
     `ALU_OP_XORI, `ALU_CONTROL_XORI,

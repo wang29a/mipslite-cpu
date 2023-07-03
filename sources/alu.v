@@ -18,7 +18,7 @@ multiplier mul(sign, srca, srcb, temp);
 
 always @(*) begin
     case (alu_cont)
-        `ALU_CONTROL_ADDI: 
+        `ALU_CONTROL_ADD: 
             ALUout <= SrcA + SrcB;
         `ALU_CONTROL_ADDU:
             ALUout <= SrcA + SrcB;
@@ -79,6 +79,8 @@ always @(*) begin
             Write_HI <= temp[63:32];
             W_HILO <= 1'b1;
         end
+        `ALU_CONTROL_ADDI: 
+            ALUout <= SrcA + SrcB;
         default:
             ALUout <= 0; 
     endcase
