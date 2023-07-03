@@ -1,4 +1,5 @@
 `include "head.v"
+`timescale 1ns / 1ps
 module controller_uint(
     input wire [5:0]op,
     input wire stall,
@@ -29,9 +30,9 @@ assign {RegDst, Branch, Jmp, Write_reg_mux,
     `OP_ADDI,   12'b0000_00_110_110
 });
 
-MuxKey #(2, 1, 12) con_stall_mux(control, stall, {
-    1'b1, controltmp,
-    1'b0, 12'b0000000000
-});
+// MuxKey #(2, 1, 12) con_stall_mux(control, stall, {
+//     1'b1, controltmp,
+//     1'b0, 12'b0000000000
+// });
 
 endmodule

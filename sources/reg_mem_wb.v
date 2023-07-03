@@ -1,4 +1,5 @@
 `include "head.v"
+`timescale 1ns / 1ps
 module reg_mem_wb(
     input wire                  clk,
     input wire                  rst,

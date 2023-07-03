@@ -1,6 +1,7 @@
 `include "head.v"
+`timescale 1ns / 1ps
 module alu_control(
-    input wire [2:0] aluop,
+    input wire [`ALU_OP_LENGTH-1:0] aluop,
     input wire [5:0] func,
     output wire [`ALU_CONTROL_LENGTH-1:0] alu_control
 );

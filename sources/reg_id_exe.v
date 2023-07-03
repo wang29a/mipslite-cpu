@@ -1,8 +1,10 @@
 `include "head.v"
-
+`timescale 1ns / 1ps
 module reg_id_exe(
     input wire                          clk,
-    input wire                          rst, 
+    input wire                          rst,
+    input wire                          wen,
+    input wire                          flush, 
     input wire                          RegDst_in,
     input wire [`ALU_OP_LENGTH-1:0]     ALUOp_in,
     input wire                          Write_reg_mux_in,
@@ -48,7 +50,23 @@ always @(posedge clk) begin
         rd_out              <= `INITIAL_VAL_6;
         rs_out              <= `INITIAL_VAL_6;
     end
-    else begin
+    else if (flush) begin
+        RegDst_out          <= 1'b0;
+        ALUOp_out           <= 2'b0;
+        Write_reg_mux_out   <= 1'b0;
+        Memwrite_out        <= 1'b0;
+        Memread_out         <= 1'b0;
+        ALUsrc_out          <= 1'b0;
+        RegWrite_out        <= 1'b0;
+        Read_data_1_out     <= `INITIAL_VAL_32;
+        Read_data_2_out     <= `INITIAL_VAL_32;
+        imm_ext_out         <= `INITIAL_VAL_32;
+        rt_out              <= `INITIAL_VAL_6;
+        rd_out              <= `INITIAL_VAL_6;
+        rs_out              <= `INITIAL_VAL_6;
+    end
+    // else if(wen) begin
+    else  begin
         RegDst_out          <= RegDst_in;
         ALUOp_out           <= ALUOp_in;
         Write_reg_mux_out   <= Write_reg_mux_in;

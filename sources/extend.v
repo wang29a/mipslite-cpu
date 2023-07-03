@@ -1,4 +1,5 @@
 `include "head.v"
+`timescale 1ns / 1ps
 module extend(
     input [15:0]        imm16,
     input               ext_op,
