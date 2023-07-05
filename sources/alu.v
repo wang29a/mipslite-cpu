@@ -1,4 +1,5 @@
 `include "head.v"
+`include "multiplier.v"
 `timescale 1ns / 1ps
 module alu(
     input [31:0] SrcA, SrcB,
@@ -9,8 +10,11 @@ module alu(
     output reg W_HILO,
     output zero
 );
-reg [63:0] temp;
+wire [63:0] temp;
+reg [31:0] srca, srcb;
 assign zero = (ALUout == 32'h00000000) ? 1 : 0;
+reg sign;
+multiplier mul(sign, srca, srcb, temp);
 
 always @(*) begin
     case (alu_cont)
@@ -30,14 +34,10 @@ always @(*) begin
             ALUout <= SrcA ^ SrcB;
         `ALU_CONTROL_OR:
             ALUout <= SrcA | SrcB;
-        `ALU_CONTROL_SLLV:
-            ALUout <= SrcB << SrcA;
-        `ALU_CONTROL_SRAV:
-            ALUout <= SrcB >>> SrcA;
-        `ALU_CONTROL_SRLV:
-            ALUout <= SrcB >> SrcA;
         `ALU_CONTROL_MULTU:begin
-            temp <= SrcA * SrcB;
+            sign <= 1'b0;
+            srca <= SrcA;
+            srcb <= SrcB;
             Write_LO <= temp[31:0];
             Write_HI <= temp[63:32];
             W_HILO <= 1'b1;
@@ -61,6 +61,20 @@ always @(*) begin
             Write_HI <= HI;
             W_HILO <= 1'b1;
         end
+        `ALU_CONTROL_XORI:
+            ALUout <= SrcA ^ SrcB;
+        `ALU_CONTROL_ANDI:
+            ALUout <= SrcA & SrcB;
+        `ALU_CONTROL_MULT:begin
+            sign <= 1'b1;
+            srca <= SrcA;
+            srcb <= SrcB;
+            Write_LO <= temp[31:0];
+            Write_HI <= temp[63:32];
+            W_HILO <= 1'b1;
+        end
+        `ALU_CONTROL_ADDI: 
+            ALUout <= SrcA + SrcB;
         default:
             ALUout <= 0; 
     endcase

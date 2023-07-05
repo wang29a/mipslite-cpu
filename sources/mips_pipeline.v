@@ -143,11 +143,42 @@ extend U_EXT(.imm16(imm16),
              .ext_out(imm_extD)
 );
 
+wire [`LENGTH-1:0] w_hi, w_lo, hi, lo, r_hi, r_lo, w_hiE, w_loE; 
+wire wen_hilo;
+reg_hilo_r U_HILO_R(.clk(clk),
+                    .rst(rst),
+                    .hi_in(lo),
+                    .lo_in(hi),
+                    .hi_out(r_hi),
+                    .lo_out(r_lo)
+);
+hilo_reg U_HILO(.clk(clk),
+                .rst(rst),
+                .wen(wen_hiloE),
+                .w_hi(w_hiE),
+                .w_lo(w_loE),
+                .lo(lo),
+                .hi(hi)
+);
+reg_hilo_w U_HILO_W(.clk(clk),
+                    .rst(rst),
+                    .hi_in(w_hi),
+                    .lo_in(w_lo),
+                    .wen_in(wen_hilo),
+                    .hi_out(w_hiE),
+                    .lo_out(w_loE),
+                    .wen_out(wen_hiloE)
+);
 alu U_ALU(.SrcA(SrcAE),
           .SrcB(SrcBE),
           .alu_cont(alu_cont),
           .zero(zeroE),
-          .ALUout(ALU_outE)
+          .ALUout(ALU_outE),
+          .LO(r_lo),
+          .HI(r_hi),
+          .W_HILO(wen_hilo),
+          .Write_HI(w_hi),
+          .Write_LO(w_lo)
 );
 
 wire [31:0] wrie_IM_to_IR;
