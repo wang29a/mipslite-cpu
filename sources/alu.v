@@ -18,22 +18,38 @@ multiplier mul(sign, srca, srcb, temp);
 
 always @(*) begin
     case (alu_cont)
-        `ALU_CONTROL_ADD: 
+        `ALU_CONTROL_ADD: begin
             ALUout <= SrcA + SrcB;
-        `ALU_CONTROL_ADDU:
+            W_HILO <= 0;
+        end
+        `ALU_CONTROL_ADDU:begin
             ALUout <= SrcA + SrcB;
-        `ALU_CONTROL_SUBU:
+            W_HILO <= 0;
+        end
+        `ALU_CONTROL_SUBU:begin
             ALUout <= SrcA - SrcB;
-        `ALU_CONTROL_ORI:
+            W_HILO <= 0;
+        end
+        `ALU_CONTROL_ORI:begin
             ALUout <= SrcA | SrcB;
-        `ALU_CONTROL_AND:
+            W_HILO <= 0;
+        end
+        `ALU_CONTROL_AND:begin
             ALUout <= SrcA & SrcB;
-        `ALU_CONTROL_NOR:
+            W_HILO <= 0;
+        end
+        `ALU_CONTROL_NOR:begin
             ALUout <= ~(SrcA | SrcB);
-        `ALU_CONTROL_XOR:
+            W_HILO <= 0;
+        end
+        `ALU_CONTROL_XOR:begin
             ALUout <= SrcA ^ SrcB;
-        `ALU_CONTROL_OR:
+            W_HILO <= 0;
+        end
+        `ALU_CONTROL_OR:begin
             ALUout <= SrcA | SrcB;
+            W_HILO <= 0;
+        end
         `ALU_CONTROL_MULTU:begin
             sign <= 1'b0;
             srca <= SrcA;
@@ -47,10 +63,14 @@ always @(*) begin
             Write_HI <= SrcA % SrcB;
             W_HILO <= 1'b1;
         end
-        `ALU_CONTROL_MFHI:
+        `ALU_CONTROL_MFHI:begin
             ALUout <= HI;
-        `ALU_CONTROL_MFLO:
+            W_HILO <= 0;
+        end
+        `ALU_CONTROL_MFLO:begin
             ALUout <= LO;
+            W_HILO <= 0;
+        end
         `ALU_CONTROL_MTHI:begin
             Write_HI <= SrcA;
             Write_LO <= LO;
@@ -61,10 +81,14 @@ always @(*) begin
             Write_HI <= HI;
             W_HILO <= 1'b1;
         end
-        `ALU_CONTROL_XORI:
+        `ALU_CONTROL_XORI:begin
             ALUout <= SrcA ^ SrcB;
-        `ALU_CONTROL_ANDI:
+            W_HILO <= 0;
+        end
+        `ALU_CONTROL_ANDI:begin
             ALUout <= SrcA & SrcB;
+            W_HILO <= 0;
+        end
         `ALU_CONTROL_MULT:begin
             sign <= 1'b1;
             srca <= SrcA;
@@ -73,10 +97,14 @@ always @(*) begin
             Write_HI <= temp[63:32];
             W_HILO <= 1'b1;
         end
-        `ALU_CONTROL_ADDI: 
+        `ALU_CONTROL_ADDI: begin
             ALUout <= SrcA + SrcB;
-        default:
+            W_HILO <= 0;
+        end
+        default:begin
             ALUout <= 0; 
+            W_HILO <= 0;
+        end
     endcase
 end
 
