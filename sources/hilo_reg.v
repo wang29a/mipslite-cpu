@@ -8,13 +8,13 @@ module hilo_reg(
     output reg[`LENGTH-1:0] lo, hi
 );
 always@(posedge clk) begin
-    if(wen == 1'b1)begin
-        lo <= w_lo;
-        hi <= w_hi;
-    end
-    else if(rst)begin
+    if(rst)begin
       lo <= `INITIAL_VAL_32;
       hi <= `INITIAL_VAL_32;
+    end
+    else if(wen)begin
+      lo <= w_lo;
+      hi <= w_hi;
     end
 end
 endmodule
