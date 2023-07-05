@@ -108,9 +108,10 @@ wire is_equal, fix_cont;
 // assign fix_cont = (BranchD)
 wire [`LENGTH-1:0] next_pc_predict, next_pc_fix;
 
-MuxKey #(2, 1, `LENGTH) U_pc_src_mux(next_pc, (BranchD&is_equal), {
-    1'b0, pc_4F,
-    1'b1, pc_4D + {{14{imm16[15]}}, imm16, 2'b00}
+MuxKey #(3, 2, `LENGTH) U_pc_src_mux(next_pc, ({{opF==`OP_JAL}, {BranchD&is_equal}}), {
+    2'b00, pc_4F,
+    2'b01, pc_4D + {{14{imm16[15]}}, imm16, 2'b00},
+    2'b10, {pc_4F[31:28], {instructionF[25:0], 2'b00}}
 });
 
 pc U_PC(.clk(clk),
