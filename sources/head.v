@@ -28,9 +28,6 @@
 `define FUNC_XOR        6'b100110
 `define FUNC_OR         6'b100101
 `define FUNC_NOR        6'b100111
-`define FUNC_SLLV       6'b000100
-`define FUNC_SRAV       6'b000111
-`define FUNC_SRLV       6'b000110
 `define FUNC_MULTU      6'b011001 
 `define FUNC_DIVU       6'b011011 
 `define FUNC_MFHI       6'b010000 
@@ -55,9 +52,6 @@
 `define ALU_CONTROL_OR      5'b00101 
 `define ALU_CONTROL_NOR     5'b00111 
 `define ALU_CONTROL_XOR     5'b01000 
-`define ALU_CONTROL_SLLV    5'b01001 
-`define ALU_CONTROL_SRAV    5'b01010 
-`define ALU_CONTROL_SRLV    5'b01011 
 `define ALU_CONTROL_XORI    5'b01100
 `define ALU_CONTROL_MULTU   5'b01101 
 `define ALU_CONTROL_DIVU    5'b01111

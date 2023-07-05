@@ -34,12 +34,6 @@ always @(*) begin
             ALUout <= SrcA ^ SrcB;
         `ALU_CONTROL_OR:
             ALUout <= SrcA | SrcB;
-        `ALU_CONTROL_SLLV:
-            ALUout <= SrcB << SrcA;
-        `ALU_CONTROL_SRAV:
-            ALUout <= SrcB >>> SrcA;
-        `ALU_CONTROL_SRLV:
-            ALUout <= SrcB >> SrcA;
         `ALU_CONTROL_MULTU:begin
             sign <= 1'b0;
             srca <= SrcA;
